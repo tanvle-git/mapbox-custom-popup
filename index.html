@@ -264,7 +264,8 @@
         // If multiple features, show list of IDs to select
         let listHtml = '<ul class="list-group list-group-flush">';
         features.forEach((f, idx) => {
-          listHtml += `<li class="list-group-item list-group-item-action" role="button" data-idx="${idx}">${f.properties.id}</li>`;
+          listHtml += `<li class="list-group-item list-group-item-action" role="button" data-idx="${idx}">${f.properties.id} - ${f.properties.pipeline}</li>`;
+          listHtml += `<li class="list-group-item list-group-item-action" role="button" data-idx="${idx}">${f.properties.id} - ${f.properties.pipeline}</li>`;
         });
         listHtml += "</ul>";
 
@@ -272,8 +273,9 @@
         const popup = new mapboxgl.Popup()
           .setLngLat(map.unproject([e.point.x, e.point.y]))
           .setHTML(`
-            <div class="card border rounded shadow-sm overflow-hidden" style="min-width: 220px;">
+            <div class="card border rounded shadow-sm overflow-hidden" style="width: 256px;">
               <div class="card-body p-0" style="max-height: 250px; overflow-y: auto;">
+                <p class="fw-semibold p-3 m-0">Select a feature to view details</p>
                 ${listHtml}
               </div>
             </div>
