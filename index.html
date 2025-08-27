@@ -54,7 +54,18 @@
         features: [
           {
             type: "Feature",
-            properties: {},
+            properties: {
+              id: "PL001",
+              pipeline: "Transcontinental Gas Pipe Line Company, LLC",
+              locationName: "HI 110 A M1278 MP 117.33",
+              locationNumber: "1000098",
+              category: "Production",
+              subCategory: "Onshore Gathering System",
+              ticker: "PLNM.109.1000098.1",
+              change: "up",
+              value: 74941,
+              percent: 10000,
+            },
             geometry: {
               type: "Point",
               coordinates: [-77.038659, 38.931567],
@@ -62,7 +73,18 @@
           },
           {
             type: "Feature",
-            properties: {},
+            properties: {
+              id: "PL002",
+              pipeline: "Columbia Gas Transmission",
+              locationName: "OH 210 B M1280 MP 120.00",
+              locationNumber: "1000099",
+              category: "Distribution",
+              subCategory: "Offshore Gathering System",
+              ticker: "PLNM.109.1000099.1",
+              change: "down",
+              value: 50000,
+              percent: -5000,
+            },
             geometry: {
               type: "Point",
               coordinates: [-77.003168, 38.894651],
@@ -70,123 +92,101 @@
           },
           {
             type: "Feature",
-            properties: {},
+            properties: {
+              id: "PL003",
+              pipeline: "Texas Eastern Transmission",
+              locationName: "TX 310 C M1300 MP 130.00",
+              locationNumber: "1000100",
+              category: "Production",
+              subCategory: "Onshore Gathering System",
+              ticker: "PLNM.109.1000100.1",
+              change: "flat",
+              value: 60000,
+              percent: 0,
+            },
             geometry: {
               type: "Point",
               coordinates: [-77.090372, 38.881189],
             },
           },
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [-77.111561, 38.882342],
-            },
-          },
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [-77.052477, 38.943951],
-            },
-          },
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [-77.043444, 38.909664],
-            },
-          },
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [-77.031706, 38.914581],
-            },
-          },
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [-77.020945, 38.878241],
-            },
-          },
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [-77.007481, 38.876516],
-            },
-          },
         ],
       };
-      // POPUP HTML STRUCTURE
-      const html = `
-        <div class="card border-0" style="max-width: 520px;">
+
+      function renderPopup(feature) {
+        const p = feature.properties;
+        let cardHtml = "";
+        const infoHtml = `
+          <div class="col-7">
+            <p class="fs-5 fw-bold">Pipeline Details</p>
+            <dl class="row mb-0">
+              <dt class="col-5 text-secondary">Pipeline</dt>
+              <dd class="col-7">${p.pipeline}</dd>
+              <dt class="col-5 text-secondary">Location Name</dt>
+              <dd class="col-7">${p.locationName}</dd>
+              <dt class="col-5 text-secondary">Location Number</dt>
+              <dd class="col-7">${p.locationNumber}</dd>
+              <dt class="col-5 text-secondary">Category</dt>
+              <dd class="col-7">
+                <span class="badge bg-success">${p.category}</span>
+              </dd>
+              <dt class="col-5 text-secondary">Sub-Category</dt>
+              <dd class="col-7">${p.subCategory}</dd>
+              <dt class="col-5 text-secondary">Ticker</dt>
+              <dd class="col-7">${p.ticker}</dd>
+            </dl>
+          </div>
+        `;
+        let metricHtml;
+
+        if (p.change === "up") {
+          metricHtml = `<div class="card border-0 text-dark" style="background-color: #d1e7dd;">
+              <div class="card-body p-3 d-flex align-items-center gap-3">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0001 7C15.2561 7 15.5121 7.098 15.7071 7.293L25.7071 17.293C25.9931 17.579 26.0791 18.009 25.9241 18.383C25.7701 18.757 25.4041 19 25.0001 19L5.00006 19C4.59606 19 4.23006 18.757 4.07606 18.383C3.92106 18.009 4.00705 17.579 4.29305 17.293L14.2931 7.293C14.4881 7.098 14.7441 7 15.0001 7Z" fill="#198754"/></svg>
+                <div class="d-flex flex-column">
+                  <p class="fw-semibold small text-uppercase text-secondary mb-0">Chg from Prev Day</p>
+                  <p class="fs-5 fw-bold mb-0">${p.value.toLocaleString()}</p>
+                  <p class="text-success mb-0">+${p.percent}%</p>
+                </div>
+              </div>
+            </div>`;
+        } else if (p.change === "down") {
+          metricHtml = `<div class="card border-0 text-dark" style="background-color: #f8d7da;">
+              <div class="card-body p-3 d-flex align-items-center gap-3">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.9999 21C14.7439 21 14.4879 20.902 14.2929 20.707L4.29295 10.707C4.00695 10.421 3.92095 9.991 4.07595 9.617C4.22995 9.243 4.59594 9 4.99994 9L24.9999 9C25.4039 9 25.7699 9.243 25.9239 9.617C26.0789 9.991 25.9929 10.421 25.7069 10.707L15.7069 20.707C15.5119 20.902 15.2559 21 14.9999 21Z" fill="#dc3545"/></svg>
+                <div class="d-flex flex-column">
+                  <p class="fw-semibold small text-uppercase text-secondary mb-0">Chg from Prev Day</p>
+                  <p class="fs-5 fw-bold mb-0">${p.value.toLocaleString()}</p>
+                  <p class="text-danger mb-0">${p.percent}%</p>
+                </div>
+              </div>
+            </div>`;
+        } else {
+          metricHtml = `
+            <div class="card border-0 text-dark" style="background-color: #fff3cd;">
+              <div class="card-body p-3 d-flex align-items-center gap-3">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.00004 8.0002C4.73502 7.99645 4.47189 8.04541 4.22596 8.14424C3.98002 8.24307 3.75618 8.38979 3.56744 8.57588C3.3787 8.76197 3.22883 8.98371 3.12653 9.22823C3.02424 9.47274 2.97156 9.73515 2.97156 10.0002C2.97156 10.2653 3.02424 10.5277 3.12653 10.7722C3.22883 11.0167 3.3787 11.2384 3.56744 11.4245C3.75618 11.6106 3.98002 11.7573 4.22596 11.8562C4.47189 11.955 4.73502 12.0039 5.00004 12.0002H25C25.2651 12.0039 25.5282 11.955 25.7741 11.8562C26.0201 11.7573 26.2439 11.6106 26.4326 11.4245C26.6214 11.2384 26.7713 11.0167 26.8736 10.7722C26.9758 10.5277 27.0285 10.2653 27.0285 10.0002C27.0285 9.73515 26.9758 9.47274 26.8736 9.22823C26.7713 8.98371 26.6214 8.76197 26.4326 8.57588C26.2439 8.38979 26.0201 8.24307 25.7741 8.14424C25.5282 8.04541 25.2651 7.99645 25 8.0002H5.00004ZM5.00004 18.0002C4.73502 17.9965 4.47189 18.0454 4.22596 18.1442C3.98002 18.2431 3.75618 18.3898 3.56744 18.5759C3.3787 18.762 3.22883 18.9837 3.12653 19.2282C3.02424 19.4727 2.97156 19.7352 2.97156 20.0002C2.97156 20.2653 3.02424 20.5277 3.12653 20.7722C3.22883 21.0167 3.3787 21.2384 3.56744 21.4245C3.75618 21.6106 3.98002 21.7573 4.22596 21.8562C4.47189 21.955 4.73502 22.0039 5.00004 22.0002H25C25.2651 22.0039 25.5282 21.955 25.7741 21.8562C26.0201 21.7573 26.2439 21.6106 26.4326 21.4245C26.6214 21.2384 26.7713 21.0167 26.8736 20.7722C26.9758 20.5277 27.0285 20.2653 27.0285 20.0002C27.0285 19.7352 26.9758 19.4727 26.8736 19.2282C26.7713 18.9837 26.6214 18.762 26.4326 18.5759C26.2439 18.3898 26.0201 18.2431 25.7741 18.1442C25.5282 18.0454 25.2651 17.9965 25 18.0002H5.00004Z" fill="#ffc107"/></svg>
+                <div class="d-flex flex-column">
+                  <p class="fw-semibold small text-uppercase text-secondary mb-0">Chg from Prev Day</p>
+                  <p class="fs-5 fw-bold mb-0">${p.value.toLocaleString()}</p>
+                  <p class="text-warning mb-0">${p.percent}%</p>
+                </div>
+              </div>
+            </div>`;
+        }
+
+        cardHtml = `<div class="card border-0" style="max-width: 520px;">
           <div class="card-body pt-3 pb-2">
             <div class="row g-3 align-items-center">
-              <div class="col-7">
-                <p class="fs-5 fw-bold">Pipeline Details</p>
-                <dl class="row mb-0">
-                  <dt class="col-5 text-secondary">Pipeline</dt>
-                  <dd class="col-7">Transcontinental Gas Pipe Line Company, LLC</dd>
-                  <dt class="col-5 text-secondary">Location Name</dt>
-                  <dd class="col-7">HI 110 A M1278 MP 117.33</dd>
-                  <dt class="col-5 text-secondary">Location Number</dt>
-                  <dd class="col-7">1000098</dd>
-                  <dt class="col-5 text-secondary">Category</dt>
-                  <dd class="col-7">
-                    <span class="badge bg-success">Production</span>
-                  </dd>
-                  <dt class="col-5 text-secondary">Sub-Category</dt>
-                  <dd class="col-7">Onshore Gathering System</dd>
-                  <dt class="col-5 text-secondary">Ticker</dt>
-                  <dd class="col-7">PLNM.109.1000098.1</dd>
-                </dl>
-              </div>
-
+              ${infoHtml}
               <div class="col-5 d-flex flex-column gap-3">
-                <div class="card border-0 text-dark" style="background-color: #d1e7dd;">
-                  <div class="card-body p-3 d-flex align-items-center gap-3">
-                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0001 7C15.2561 7 15.5121 7.098 15.7071 7.293L25.7071 17.293C25.9931 17.579 26.0791 18.009 25.9241 18.383C25.7701 18.757 25.4041 19 25.0001 19L5.00006 19C4.59606 19 4.23006 18.757 4.07606 18.383C3.92106 18.009 4.00705 17.579 4.29305 17.293L14.2931 7.293C14.4881 7.098 14.7441 7 15.0001 7Z" fill="#198754"/></svg>
-                    <div class="d-flex flex-column">
-                      <p class="fw-semibold small text-uppercase text-secondary mb-0">Chg from Prev Day</p>
-                      <p class="fs-5 fw-bold mb-0">74,941</p>
-                      <p class="text-success mb-0">+10,000%</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="card border-0 text-dark" style="background-color: #fff3cd;">
-                  <div class="card-body p-3 d-flex align-items-center gap-3">
-                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.00004 8.0002C4.73502 7.99645 4.47189 8.04541 4.22596 8.14424C3.98002 8.24307 3.75618 8.38979 3.56744 8.57588C3.3787 8.76197 3.22883 8.98371 3.12653 9.22823C3.02424 9.47274 2.97156 9.73515 2.97156 10.0002C2.97156 10.2653 3.02424 10.5277 3.12653 10.7722C3.22883 11.0167 3.3787 11.2384 3.56744 11.4245C3.75618 11.6106 3.98002 11.7573 4.22596 11.8562C4.47189 11.955 4.73502 12.0039 5.00004 12.0002H25C25.2651 12.0039 25.5282 11.955 25.7741 11.8562C26.0201 11.7573 26.2439 11.6106 26.4326 11.4245C26.6214 11.2384 26.7713 11.0167 26.8736 10.7722C26.9758 10.5277 27.0285 10.2653 27.0285 10.0002C27.0285 9.73515 26.9758 9.47274 26.8736 9.22823C26.7713 8.98371 26.6214 8.76197 26.4326 8.57588C26.2439 8.38979 26.0201 8.24307 25.7741 8.14424C25.5282 8.04541 25.2651 7.99645 25 8.0002H5.00004ZM5.00004 18.0002C4.73502 17.9965 4.47189 18.0454 4.22596 18.1442C3.98002 18.2431 3.75618 18.3898 3.56744 18.5759C3.3787 18.762 3.22883 18.9837 3.12653 19.2282C3.02424 19.4727 2.97156 19.7352 2.97156 20.0002C2.97156 20.2653 3.02424 20.5277 3.12653 20.7722C3.22883 21.0167 3.3787 21.2384 3.56744 21.4245C3.75618 21.6106 3.98002 21.7573 4.22596 21.8562C4.47189 21.955 4.73502 22.0039 5.00004 22.0002H25C25.2651 22.0039 25.5282 21.955 25.7741 21.8562C26.0201 21.7573 26.2439 21.6106 26.4326 21.4245C26.6214 21.2384 26.7713 21.0167 26.8736 20.7722C26.9758 20.5277 27.0285 20.2653 27.0285 20.0002C27.0285 19.7352 26.9758 19.4727 26.8736 19.2282C26.7713 18.9837 26.6214 18.762 26.4326 18.5759C26.2439 18.3898 26.0201 18.2431 25.7741 18.1442C25.5282 18.0454 25.2651 17.9965 25 18.0002H5.00004Z" fill="#ffc107"/></svg>
-                    <div class="d-flex flex-column">
-                      <p class="fw-semibold small text-uppercase text-secondary mb-0">Chg from Prev Day</p>
-                      <p class="fs-5 fw-bold mb-0">74,941</p>
-                      <p class="text-warning mb-0">+0%</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="card border-0 text-dark" style="background-color: #f8d7da;">
-                  <div class="card-body p-3 d-flex align-items-center gap-3">
-                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.9999 21C14.7439 21 14.4879 20.902 14.2929 20.707L4.29295 10.707C4.00695 10.421 3.92095 9.991 4.07595 9.617C4.22995 9.243 4.59594 9 4.99994 9L24.9999 9C25.4039 9 25.7699 9.243 25.9239 9.617C26.0789 9.991 25.9929 10.421 25.7069 10.707L15.7069 20.707C15.5119 20.902 15.2559 21 14.9999 21Z" fill="#dc3545"/></svg>
-                    <div class="d-flex flex-column">
-                      <p class="fw-semibold small text-uppercase text-secondary mb-0">Chg from Prev Day</p>
-                      <p class="fs-5 fw-bold mb-0">74,941</p>
-                      <p class="text-danger mb-0">-10,000%</p>
-                    </div>
-                  </div>
-                </div>
+                ${metricHtml}
               </div>
             </div>
           </div>
-        </div>
-    `;
+        </div>`;
+
+        return cardHtml;
+      }
 
 
       const map = new mapboxgl.Map({
@@ -212,17 +212,6 @@
               "circle-stroke-color": "#ffffff",
             },
           }),
-          map.addInteraction("places-click-interaction", {
-            type: "click",
-            target: {
-              layerId: "places",
-            },
-            handler: (e) => {
-              const t = e.feature.geometry.coordinates.slice();
-              // ADD POPUP ON CLICK
-              new mapboxgl.Popup().setLngLat(t).setHTML(html).addTo(map);
-            },
-          }),
           map.addInteraction("places-mouseenter-interaction", {
             type: "mouseenter",
             target: {
@@ -241,6 +230,71 @@
               map.getCanvas().style.cursor = "";
             },
           });
+      });
+      // Add click event for map
+      map.on("click", function (e) {
+        // Buffer pixel (e.g. 10x10)
+        const buffer = 10;
+        // Query features within buffer area
+        const features = map.queryRenderedFeatures(
+          [
+            [e.point.x - buffer, e.point.y - buffer],
+            [e.point.x + buffer, e.point.y + buffer],
+          ],
+          { layers: ["places"] }
+        );
+
+        // If no features, do nothing
+        if (!features.length) return;
+
+        // If only one feature, show popup with its data
+        if (features.length === 1) {
+          const t = features[0].geometry.coordinates.slice();
+          new mapboxgl.Popup()
+            .setLngLat(t)
+            .setHTML(renderPopup(features[0]))
+            .addTo(map);
+          return;
+        }
+
+        // If multiple features, show list of IDs to select
+        let listHtml = '<ul class="list-group">';
+        features.forEach((f, idx) => {
+          listHtml += `<li class="list-group-item list-group-item-action" data-idx="${idx}">ID: ${f.properties.id}</li>`;
+        });
+        listHtml += "</ul>";
+
+        // Show Mapbox popup at click position
+        const popup = new mapboxgl.Popup()
+          .setLngLat(map.unproject([e.point.x, e.point.y]))
+          .setHTML(
+            `
+            <div class="card border-0" style="min-width: 200px;">
+              <div class="card-body p-2">
+                <h5 class="fs-5 fw-bold">Select a feature</h5>
+                ${listHtml}
+              </div>
+            </div>
+          `
+          )
+          .addTo(map);
+
+        // Handle feature selection in popup
+        setTimeout(() => {
+          document
+            .querySelectorAll(".mapboxgl-popup .list-group-item")
+            .forEach((item) => {
+              item.addEventListener("click", function () {
+                const idx = this.getAttribute("data-idx");
+                const t = features[idx].geometry.coordinates.slice();
+                popup.remove();
+                new mapboxgl.Popup()
+                  .setLngLat(t)
+                  .setHTML(renderPopup(features[idx]))
+                  .addTo(map);
+              });
+            });
+        }, 100);
       });
     </script>
   </body>
